@@ -260,6 +260,25 @@ void i2c_NAck(void)
 	i2c_Delay();	
 }
 
+
+void i2c_GPIO_Config(void)
+{
+	GPIO_Init(GPIO_PORT_I2C, I2C_SCL_PIN, GPIO_MODE_OUT_PP_HIGH_FAST);	// clk
+	GPIO_Init(GPIO_PORT_I2C, I2C_SDA_PIN, GPIO_MODE_OUT_OD_HIZ_FAST);	// data
+}
+
+uint8_t i2c_CheckDevice(uint8_t _Address)
+{
+	uint8_t ucAck;
+
+	i2c_GPIO_Config();
+	i2c_Start();
+	i2c_SendByte(_Address|0x00);
+	ucAck = i2c_WaitAck();
+	i2c_Stop();
+
+	return ucAck;
+}
 #endif
 
 #if defined(QST_SW_IIC_MTK)

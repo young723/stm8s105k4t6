@@ -454,6 +454,11 @@ uint8_t qmaX981_init(void)
 	unsigned char reg_0x42 = 0;
 #endif
 
+#if defined(QST_SW_IIC)
+	acc_chip_id = i2c_CheckDevice((0x12<<1));
+	qst_printf("i2c_CheckDevice addr=%d ret=%d\n", (0x12<<1), acc_chip_id);
+#endif
+
 	qmaX981_read_reg(0x00, &acc_chip_id, 1);
 	qst_printf("qmaX981_init chipid=%d \n", acc_chip_id);
 	if((acc_chip_id>=0xb0)&&(acc_chip_id<=0xb9))

@@ -12,7 +12,7 @@
 #define QMC7983_Vertical			5
 #define QMC7983_Slope				6
 
-#define QMC5883L
+//#define QMC5883L
 
 #if defined(QMC5883L)
 #define QMC_II_ADDR		(0x0c<<1)
@@ -28,16 +28,12 @@ uint8_t qmcX983_read_xyz(void)
 	int16_t raw[3];
 	uint8_t err = 0;
 
-	qst_iic_read(QMC_II_ADDR, 0x06, &reg_data[0], 1);
-	qst_printf("qmcX983 value=%d\n",reg_data[0]);
-
+	//qst_iic_read(QMC_II_ADDR, 0x06, &reg_data[0], 1);
 	err = qst_iic_read(QMC_II_ADDR, 0x00, reg_data, 6);
  	raw[0] = (int16_t)((reg_data[1]<<8)|(reg_data[0]));
 	raw[1] = (int16_t)((reg_data[3]<<8)|(reg_data[2]));
 	raw[2] = (int16_t)((reg_data[5]<<8)|(reg_data[4]));
-	if(mag_chip_id >= 3)
-	{
-	}
+
 #if defined(QMC5883L)
 	qst_printf("5883L %f %f %f\n",(float)raw[0]/30.0f,(float)raw[1]/30.0f,(float)raw[2]/30.0f);
 #else
@@ -50,6 +46,10 @@ uint8_t qmcX983_init(void)
 {
 	uint8_t chip;
 
+#if defined(QST_SW_IIC)
+	chip = i2c_CheckDevice(QMC_II_ADDR);
+	qst_printf("i2c_CheckDevice addr=%d ret=%d\n", QMC_II_ADDR, chip);
+#endif
 #if defined(QMC5883L)
 	qst_iic_write(QMC_II_ADDR,0x0b, 0x01);
 	qst_iic_write(QMC_II_ADDR,0x09,0x1d);

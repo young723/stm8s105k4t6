@@ -374,6 +374,10 @@ uint8_t qmp6988_init(void)
 {
 	uint8_t chip;
 
+#if defined(QST_SW_IIC)
+	chip = i2c_CheckDevice((QMP6988_IIC_ADDR<<1));
+	qst_printf("i2c_CheckDevice addr=%d ret=%d\n", (QMP6988_IIC_ADDR<<1), chip);
+#endif
 	qmp6988_ReadData(0xd1, &chip, 1);
 	if(chip == 0x5c)
 	{
